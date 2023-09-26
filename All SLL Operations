@@ -1,0 +1,194 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node{
+    int data;
+    struct node *next;
+};
+
+void traverse(struct node *ptr){
+    while(ptr!=NULL){
+        printf("%d ", ptr->data);
+        ptr = ptr->next;
+    }
+    printf("\n");
+}
+
+struct node* createNode(int data){
+    struct node *newNode = (struct node*)malloc(sizeof(struct node));
+    if(newNode == NULL){
+        printf("Memory allocation failed!\n");
+        return NULL;
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+struct node* addNode(struct node* head,int data){
+    struct node *newNode = createNode(data);
+    if(newNode == NULL){
+        printf("Unable to create a new node!!\n");
+        return head;
+    }
+
+    if(head == NULL){
+        head = newNode;
+        return head;
+    }
+    
+    struct node* temp = head;
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = newNode;
+    return head;
+}
+
+struct node * insertAtFirst(struct node *head, int data){
+    struct node *ptr = (struct node *)malloc(sizeof(struct node));
+    ptr->next = head;
+    ptr ->data = data;
+    head = ptr;
+    return head;
+}
+
+struct node * insertAtIndex(struct node *head, int data, int index){
+    struct node *ptr = (struct node *)malloc(sizeof(struct node));
+    struct node *p = head;
+    int i = 0;
+
+    while(i!=index-1){
+        p = p->next;
+        i++;
+    }    
+    ptr->data = data;
+    ptr->next = p->next;
+    p->next = ptr;
+    return head;
+}
+
+struct node * insertAtEnd(struct node *head, int data){
+    struct node *ptr = (struct node *)malloc(sizeof(struct node));
+    struct node *p = head;
+    ptr->data = data;
+
+    while(p->next != NULL){
+        p = p->next;
+    }
+    p->next = ptr;
+    ptr->next = NULL;
+    return head;
+}
+
+struct node *deleteFirst(struct node *head){
+    struct node *ptr = head;
+    head = head->next;
+    free(ptr);
+    return head;
+}
+
+struct node *deleteAtIndex(struct node *head, int index){
+    struct node *p = head;
+    struct node *q = head->next;
+    for(int i=0; i<index-1; i++){
+        p = p->next;
+        q = q->next;
+    }
+    p->next = q->next;
+    free(q);
+    return head;
+}
+
+struct node *deleteAtLast(struct node *head){
+    struct node *p = head;
+    struct node *q = head->next;
+    while(q->next != NULL){
+        p = p->next;
+        q = q->next;
+    }
+    p->next = NULL;
+    free(q);
+    return head;
+}
+
+void displayMenu(){
+    printf("Menu:\n");
+    printf("1. Add a node:\n");
+    printf("2. Display the linked list:\n");
+    printf("3. Insert at first index: \n");
+    printf("4. Insert at a given index: \n");
+    printf("5. Insert at last index: \n");
+    printf("6. Delete at first index: \n");
+    printf("7. Delete at a given index: \n");
+    printf("8. Delete at last index: \n");
+    printf("9. Exit:\n");
+}
+
+int main(){
+    struct node* head = NULL;
+    int data, choice;
+    int index;
+
+    while(choice != 9){
+        displayMenu();
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch(choice){
+            case 1:
+                printf("Enter the data: ");
+                scanf("%d", &data);
+                head = addNode(head, data);
+                break;
+            case 2:
+                printf("The linked list is: ");
+                traverse(head);
+                break;
+            case 3:
+                printf("Insert at first index: ");
+                printf("Enter the new data: ");
+                scanf("%d", &data);
+                head = insertAtFirst(head, data);
+                break;
+            case 4:
+                printf("Insert at the given index: ");
+                printf("Enter the index: ");
+                scanf("%d", &index);
+                printf("Enter the new data: ");
+                scanf("%d", &data);
+                head = insertAtIndex(head, data, index);
+                break;
+            case 5:
+                printf("Insert at last index: ");
+                printf("Enter the new data: ");
+                scanf("%d", &data);
+                head = insertAtEnd(head, data);
+                break;
+            case 6:
+                printf("Delete at first position: ");
+                head = deleteFirst(head);
+                break;
+            case 7:
+                printf("Delete at the given index: ");
+                printf("Enter the index: ");
+                scanf("%d", &index);
+                head = deleteAtIndex(head, index);
+                break;
+            case 8:
+                printf("Delete at last position: ");
+                head = deleteAtLast(head);
+                break;
+            case 9:
+                printf("Exiting the program.\n");
+                while (head != NULL) {
+                    struct node *temp = head;
+                    head = head->next;
+                    free(temp);
+                }
+                break;
+            default:
+                printf("Invalid choice!!\n");
+        }
+    }
+    return 0;
+}
